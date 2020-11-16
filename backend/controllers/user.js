@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt'); //Notre système de cryptage
+const jwt = require('jsonwebtoken'); //permet de créer et de vérifier des tokens d'auth
 const User = require('../models/User'); //Notre UserSchéma
 
 
@@ -32,7 +33,11 @@ exports.login = (req, res, next) => {
                     }
                     res.status(200).json({ //si le mdp correspond on retourne un objet json
                         userId: user._id,
-                        token: 'TOKEN'
+                        token: jwt.sign( //fonction sign pour encoder
+                            { userId: user._id }, //1er argument: ce qque l'on veut encoder
+                            'RANDOM_TOKEN_SECRET', //2ème argument: clé secrète
+                            { expiresIn: '8h' } //3ème argument: argument de configuration
+                        )
                     });
                 })
                 .catch(error => res.status(500).json({ error }))
