@@ -1,9 +1,13 @@
 const express = require('express'); //on importe le framework express
 const mongoose = require('mongoose'); //on importe mongoose
 const bodyParser = require('body-parser'); //on importe body-parser pour transformer le corps en json
+const path = require('path');
+const helmet = require('helmet'); //sécurise les headers HTTP
 
 const usersRoutes = require('./routes/user');
 const saucesRoutes = require('./routes/sauce');
+
+require('dotenv').config();
 
 const app = express();
 
@@ -16,12 +20,16 @@ app.use((req, res, next) => {
 
 app.use(bodyParser.json());
 
-mongoose.connect('mongodb+srv://Roro13009:123Test321@projet6.dp0yo.mongodb.net/<dbname>?retryWrites=true&w=majority',
-  { useNewUrlParser: true,
+mongoose.connect(process.env.DB_URI,
+  { useCreateIndex: true,
+    useNewUrlParser: true,
     useUnifiedTopology: true })
   .then(() => console.log('Connexion à MongoDB réussie !'))
   .catch(() => console.log('Connexion à MongoDB échouée !'));
 
+app.use('/images', express.static(path.join(__dirname, 'images')));
+
+app.use(helmet());
 
 app.use('/api/auth', usersRoutes); //pour la routes auth on utilise le router userRoutes
 app.use('/api/sauces', saucesRoutes); //pour cette route on utilise le router saucesRoutes
