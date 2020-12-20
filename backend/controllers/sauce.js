@@ -34,14 +34,7 @@ exports.modifySauce = (req, res, next) => {
     .then(() => res.status(200).json({ message: 'Sauce modifée' }))
     .catch(error => res.status(400).json({ error }));
     
-    /*const sauceObject = req.file ?  //si le fichier existe 
-     {
-        ...JSON.parse(req.body.sauce),
-        imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
-     } : { ...req.body }; //si le fichier existe pas
-    Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
-        .then(() => res.status(200).json({ message: 'Sauce modifée' }))
-        .catch(error => res.status(400).json({ error }));*/
+
 }
 
 //Supprimer une sauce

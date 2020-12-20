@@ -5,17 +5,18 @@ const User = require('../models/User'); //Notre UserSchéma
 
 //Pour la création de nouveaux utilisateurs
 //expression régulière: 8 caractères, une maj, une min, un chiffre
-var regex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}/;
+var regexPassword = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}/;
+var regexEmail = /^([a-z\d\.-]+)@([a-z\d-]+)\.([a-z{2,8})(\.[a-z]{2,8})?$/;
 
 exports.signup = (req, res, next) => {
-    if((req.body.password).match(regex)) {
+    if(((req.body.password).match(regexPassword))&&(req.body.email).match(regexEmail)) {
       bcrypt.hash(req.body.password, 10) //hashage du mdp, 10 répète l'algorythme de hashage
         .then(hash => { //On récupère le hash du password et créer un nouvel utilisateur
             const user = new User({
                 email: req.body.email, //on récupère l'email dans le corps de la requête
                 password: hash //on récupère le mdp crypté
             });
-            user.save() //cette méthode enregistre dans la bde
+            user.save() //cette méthode enregistre dans la bdd
                 .then(() => res.status(201).json({ message: 'Utilisateur créé.'}))
                 .catch(error => res.status(400).json({ error }));
         })
